@@ -11,7 +11,7 @@ export default class SessionsController {
 
     const user = await db("users")
       .where("username", username)
-      .select("id", "password", "level")
+      .select("id", "password", "level_id")
       .first();
 
     if (!user || !(await verifyPassword(user.password, password))) {
@@ -20,6 +20,6 @@ export default class SessionsController {
 
     return res
       .status(201)
-      .json({ token: generateToken({ id: user.id }), level: user.level });
+      .json({ token: generateToken({ id: user.id, level_id: user.level_id }) });
   }
 }

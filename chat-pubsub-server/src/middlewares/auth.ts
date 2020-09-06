@@ -23,6 +23,7 @@ function verifyToken(req: Request, res: Response, next: NextFunction) {
     const result = decoded as Decoded;
 
     req.userId = result.id;
+    req.userLevel = result.id;
 
     return next();
   });
