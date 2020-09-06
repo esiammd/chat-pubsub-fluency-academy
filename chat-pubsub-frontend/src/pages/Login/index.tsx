@@ -33,10 +33,10 @@ function Login() {
     try {
       const response = await api.post("/sessions", { username, password });
 
-      const { token, level } = response.data;
+      const { token } = response.data;
 
       localStorage.setItem("token", token);
-      localStorage.setItem("level", level);
+      localStorage.setItem("username", username);
 
       history.push("/chat");
     } catch (erro) {

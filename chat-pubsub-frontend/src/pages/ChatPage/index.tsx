@@ -1,38 +1,38 @@
 import React, { useState, FormEvent, useEffect } from "react";
+import io from "socket.io-client";
 
 import "./styles.css";
+import { useHistory } from "react-router-dom";
 
 interface MessagesProps {
-  user: string;
+  username: string;
   message: string;
 }
 
+const socket = io("http://localhost:3333");
+
 function ChatPage() {
+  const history = useHistory();
+  const username = localStorage.getItem("username") || "username";
+
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Array<MessagesProps>>([]);
 
   useEffect(() => {
-    setMessages([
-      {
-        user: "Ana",
-        message: "Hello people",
-      },
-      {
-        user: "Carlos",
-        message: "Good Morning",
-      },
-      {
-        user: "Luana",
-        message: "How are you?",
-      },
-    ]);
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      history.push("/");
+    }
   }, []);
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
     if (message !== "") {
-      setMessages([...messages, { user: "Fulano", message }]);
+      socket.emit("sendMessage", { username, message });
+
+      setMessages([...messages, { username, message }]);
       setMessage("");
     }
   }
@@ -46,7 +46,7 @@ function ChatPage() {
           {messages.map((item, index) => {
             return (
               <li key={index}>
-                <span>{item.user}</span>
+                <span>{item.username}</span>
                 <p>{item.message}</p>
               </li>
             );
