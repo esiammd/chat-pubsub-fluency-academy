@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useState, useEffect } from "react";
 import { useHistory, Link } from "react-router-dom";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
@@ -13,6 +13,14 @@ function Login() {
   const [isShowPassword, setIsShowPassword] = useState(false);
 
   const history = useHistory();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      history.push("/chat");
+    }
+  }, [history]);
 
   function showPassword() {
     const element = document.getElementById("password");

@@ -1,8 +1,8 @@
 import React, { useState, FormEvent, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import io from "socket.io-client";
 
 import "./styles.css";
-import { useHistory } from "react-router-dom";
 
 interface MessagesProps {
   username: string;
@@ -24,21 +24,40 @@ function ChatPage() {
     if (!token) {
       history.push("/");
     }
-  }, []);
+
+    function handleNewMessage(newMessage: MessagesProps) {
+      setMessages([...messages, newMessage]);
+    }
+    socket.on("sendMessage", handleNewMessage); //se inscreve no canal sendMessage
+    return () => {
+      socket.off("sendMessage", handleNewMessage);
+    }; //se desinscreve do canal sendMesssage
+  }, [history, messages]);
+
+  function handleLogout() {
+    localStorage.removeItem("username");
+    localStorage.removeItem("token");
+
+    history.push("/");
+  }
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
     if (message !== "") {
       socket.emit("sendMessage", { username, message });
-
-      setMessages([...messages, { username, message }]);
       setMessage("");
     }
   }
 
   return (
     <div className="page_chat">
+      <header>
+        <button type="button" onClick={handleLogout}>
+          Logout
+        </button>
+      </header>
+
       <h1>Chat Fluency Academy</h1>
 
       <div className="messages">
@@ -59,7 +78,6 @@ function ChatPage() {
           placeholder="Enter your message"
           value={message}
           onChange={(event) => setMessage(event.target.value)}
-          className="form_field"
         />
         <button type="submit" className="form_button">
           Submit

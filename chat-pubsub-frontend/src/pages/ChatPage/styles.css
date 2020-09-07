@@ -1,17 +1,43 @@
 .page_chat {
   height: 100vh;
-  margin: 0 5%;
+
+  padding: 0 5%;
+}
+
+.page_chat header {
+  height: 15vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.page_chat header button {
+  color: var(--primary-color);
+  font-weight: bold;
+  font-size: 16px;
+
+  background-color: transparent;
+  border: 2px solid var(--primary-color);
+  border-radius: 5px;
+
+  height: 50px;
+  width: 120px;
+
+  transition: 0.2s;
+}
+
+.page_chat header button:hover {
+  opacity: 0.8;
 }
 
 .page_chat h1 {
-  height: 15vh;
-  display: flex;
-  align-items: center;
+  margin-bottom: 32px;
 }
 
 .messages {
   width: 100%;
-  height: 50%;
+  height: 45%;
 
   padding: 3%;
   margin-bottom: 12px;
@@ -37,11 +63,11 @@
   color: var(--title-color);
 }
 
-.form_field {
+.form_chat input {
   width: 100%;
   height: 50px;
 
-  padding: 0 20px;
+  padding: 12px;
   margin-bottom: 12px;
 
   color: var(--text-color);
@@ -77,11 +103,12 @@
     flex-direction: row;
   }
 
-  .form_field {
+  .form_chat input {
+    margin-bottom: 0px;
     margin-right: 8px;
   }
 
-  .form_button {
-    width: 120px;
+  .form_chat .form_button {
+    width: 150px;
   }
 }
