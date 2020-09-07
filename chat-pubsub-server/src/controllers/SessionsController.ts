@@ -18,8 +18,13 @@ export default class SessionsController {
       return res.status(401).json({ error: "Incorrect username or password" });
     }
 
+    const level = await db("channels")
+      .where("id", user.level_id)
+      .select("level")
+      .first();
+
     return res
       .status(201)
-      .json({ token: generateToken({ id: user.id, level_id: user.level_id }) });
+      .json({ token: generateToken({ id: user.id, level: level.level }) });
   }
 }

@@ -6,7 +6,7 @@ export async function up(knex: Knex) {
     table.string("username").notNullable().unique();
     table.string("password").notNullable();
 
-    table.string("level_id").notNullable();
+    table.integer("level_id").notNullable();
     table.foreign("level_id").references("id").inTable("channels");
 
     table.timestamp("created_at").defaultTo(knex.fn.now());

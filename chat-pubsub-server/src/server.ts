@@ -4,6 +4,7 @@ import routes from "./routes";
 
 import { createServer } from "http";
 import socketIo from "socket.io";
+import authMiddleware from "./middlewares/auth";
 
 const app = express();
 
@@ -15,26 +16,32 @@ app.use(express.json());
 app.use(routes);
 
 ////////////////////////////////////////////////////
-let message = []; // sem uso no momento
+app.get("/chats", authMiddleware, (req, res) => {
+  interface MessagesProps {
+    username: string;
+    message: string;
+  }
 
-io.on("connection", (socket) => {
-  console.log(`Socket conectado: ${socket.id}`);
+  let messages: MessagesProps[] = []; // sem armazenamento na base de dados no momento
+  io.on("connection", (socket) => {
+    console.log(`Socket conectado: ${socket.id}`);
 
-  //escuta o canal sendMessage e emite para todos pelo io.on
-  socket.on("sendMessage", (data) => {
-    console.log("sendMessage:", data);
-    message.push(data);
-    io.emit("sendMessage", data);
+    // socket.emit("previousMessages", messages);
+
+    //escuta o canal sendMessage e emite para todos pelo io.on
+    socket.on("sendMessage", (data) => {
+      console.log(data);
+      messages.push(data);
+      io.emit("sendMessage", data);
+    });
+
+    socket.on("disconnect", () => {
+      console.log(`Socket disconnect: ${socket.id}`);
+    });
   });
 
-  socket.on("disconnect", () => {
-    console.log(`Socket disconnect: ${socket.id}`);
-  });
+  return res.json({ userLevel: req.userLevel });
 });
-
-// - socket.on: ouvir
-// - socket.emit: enviar mensagem unicamente para o socket conectado
-// - socket.broadcast.emit: enviar mensagem para todos os sockets conectados
 ///////////////////////////////////////////////////
 
 server.listen(3333);

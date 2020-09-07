@@ -4,6 +4,7 @@ import authConfig from "../config/auth";
 
 interface Decoded {
   id: number;
+  level: string;
 }
 
 function verifyToken(req: Request, res: Response, next: NextFunction) {
@@ -23,7 +24,7 @@ function verifyToken(req: Request, res: Response, next: NextFunction) {
     const result = decoded as Decoded;
 
     req.userId = result.id;
-    req.userLevel = result.id;
+    req.userLevel = result.level;
 
     return next();
   });

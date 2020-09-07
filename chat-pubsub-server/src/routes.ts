@@ -14,6 +14,6 @@ routes.post("/users", usersController.create);
 
 routes.post("/sessions", sessionsController.create);
 
-routes.post("/chats", authMiddleware, chatsController.create);
+// routes.post("/chats", authMiddleware, chatsController.index);
 
 export default routes;
