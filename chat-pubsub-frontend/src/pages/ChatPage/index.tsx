@@ -15,6 +15,7 @@ function ChatPage() {
   const username = localStorage.getItem("username") || "username";
 
   const [socket, setSocket] = useState<SocketIOClient.Socket>();
+  const [channel, setChannel] = useState("");
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<MessagesProps[]>([]);
@@ -35,25 +36,31 @@ function ChatPage() {
 
   useEffect(() => {
     function handleNewMessage(newMessage: MessagesProps) {
-      messages.push(newMessage);
-      setMessages([...messages]);
+      // messages.push(newMessage);
+      // setMessages([...messages]);
+      setMessages([...messages, newMessage]);
     }
 
-    if (socket) {
-      // listen to previous messages
-      socket.on("previousMessages", (previousMessages: MessagesProps[]) => {
-        previousMessages.map((item) => handleNewMessage(item));
-      });
+    // listen to previous messages
+    // socket?.on("previousMessages", (previousMessages: MessagesProps[]) => {
+    //   previousMessages.map((item) => handleNewMessage(item));
+    // });
 
-      socket.on("receivedMessage", (newMessage: MessagesProps) => {
-        handleNewMessage(newMessage);
-      }); //se inscreve no canal sendMessage
-    }
-  }, [socket, messages]);
+    // listen to the channel you belong to
+    socket?.on("channel", (channel: string) => setChannel(channel));
+
+    // subscribe to the channel you belong to
+    socket?.on(channel, (newMessage: MessagesProps) => {
+      handleNewMessage(newMessage);
+    });
+  }, [socket, channel, messages]);
 
   function handleLogout() {
     localStorage.removeItem("username");
     localStorage.removeItem("token");
+
+    socket?.disconnect();
+    setSocket(undefined);
 
     history.push("/");
   }
@@ -62,9 +69,8 @@ function ChatPage() {
     event.preventDefault();
 
     if (message !== "") {
-      if (socket) {
-        socket.emit("sendMessage", { username, message });
-      }
+      // send the message to the sendMessage channel
+      socket?.emit("sendMessage", { username, message });
       setMessage("");
     }
   }

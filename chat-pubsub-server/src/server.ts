@@ -30,13 +30,28 @@ io.use((socket, next) => {
   console.log(`Socket conectado: ${socket.id}`);
 
   // sends previous messages
-  socket.emit("previousMessages", messages);
+  // socket.emit("previousMessages", messages);
 
   // escuta o canal sendMessage e emite para todos pelo io.on
   socket.on("sendMessage", (data: any) => {
     console.log("nivel: ", socket.decoded);
     messages.push(data);
-    io.emit("receivedMessage", data);
+
+    socket.emit("channel", socket.decoded);
+
+    switch (socket.decoded) {
+      case "D":
+        io.emit("D", data);
+
+      case "C":
+        io.emit("C", data);
+
+      case "B":
+        io.emit("B", data);
+
+      default:
+        io.emit("A", data);
+    }
   });
 
   socket.on("disconnect", () => {
