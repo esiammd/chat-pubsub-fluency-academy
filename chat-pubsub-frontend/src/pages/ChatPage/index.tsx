@@ -89,9 +89,14 @@ function ChatPage() {
         <ul>
           {messages.map((item, index) => {
             return (
-              <li key={index}>
+              <li
+                key={index}
+                className={`message_${
+                  item.username === username ? "mine" : "other"
+                }`}
+              >
                 <span>{item.username}</span>
-                <p>{item.message}</p>
+                <p style={{ whiteSpace: "pre-wrap" }}>{item.message}</p>
               </li>
             );
           })}

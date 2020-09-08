@@ -32,7 +32,12 @@ io.use((socket, next) => {
   // sends previous messages
   // socket.emit("previousMessages", messages);
 
-  // escuta o canal sendMessage e emite para todos pelo io.on
+  /**
+   * listen to the sendMessage channel,
+   * checks the customer’s authorization level,
+   * passes on to the customer the channel he should listen to and
+   * forwards the received message to the corresponding levels
+   * */
   socket.on("sendMessage", (data: any) => {
     console.log("nivel: ", socket.decoded);
     messages.push(data);

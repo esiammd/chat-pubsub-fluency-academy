@@ -36,10 +36,12 @@
 }
 
 .messages {
-  width: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+
   height: 45%;
 
-  padding: 3%;
+  padding: 8px 16px;
   margin-bottom: 12px;
 
   background-color: #fff;
@@ -49,19 +51,43 @@
   word-wrap: break-word;
 }
 
+.messages ul {
+  display: flex;
+  flex-direction: column;
+}
+
 .messages li {
   list-style: none;
   margin-bottom: 8px;
+  border-radius: 5px;
 }
 
-.messages span {
-  color: var(--text-color);
+.messages li span {
+  color: var(--title-color);
+  opacity: 0.6;
   font-size: 13px;
   font-weight: bold;
 }
 
-.messages p {
+.messages li p {
   color: var(--title-color);
+}
+
+.message_mine {
+  align-self: flex-end;
+  text-align: right;
+
+  width: min-content;
+  padding: 4px;
+
+  background-color: rgb(252, 139, 119);
+}
+
+.message_other {
+  width: min-content;
+  padding: 4px;
+
+  background-color: rgb(224, 220, 226);
 }
 
 .form_chat textarea {
@@ -102,7 +128,25 @@
 }
 
 @media (min-width: 700px) {
+  .page_chat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .page_chat header {
+    display: flex;
+    align-self: flex-end;
+  }
+
+  .messages {
+    width: 600px;
+    height: 55%;
+  }
+
   .form_chat {
+    width: 600px;
+
     display: flex;
     flex-direction: row;
   }
