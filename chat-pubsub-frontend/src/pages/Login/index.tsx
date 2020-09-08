@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useState, useEffect } from "react";
 import { useHistory, Link } from "react-router-dom";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
@@ -13,6 +13,14 @@ function Login() {
   const [isShowPassword, setIsShowPassword] = useState(false);
 
   const history = useHistory();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      history.push("/chat");
+    }
+  }, [history]);
 
   function showPassword() {
     const element = document.getElementById("password");
@@ -33,10 +41,10 @@ function Login() {
     try {
       const response = await api.post("/sessions", { username, password });
 
-      const { token, level } = response.data;
+      const { token } = response.data;
 
       localStorage.setItem("token", token);
-      localStorage.setItem("level", level);
+      localStorage.setItem("username", username);
 
       history.push("/chat");
     } catch (erro) {

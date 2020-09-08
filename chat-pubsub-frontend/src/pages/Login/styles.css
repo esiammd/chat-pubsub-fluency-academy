@@ -9,7 +9,8 @@
 }
 
 .form_login {
-  padding: 5%;
+  width: 100%;
+  padding: 10% 5%;
 
   background-color: #fff;
   border-radius: 10px;
@@ -26,7 +27,7 @@
 
   display: flex;
   flex-direction: column;
-  margin-bottom: 32px;
+  margin-bottom: 12px;
 }
 
 .form_field label {
@@ -95,8 +96,6 @@
   border-radius: 5px;
 
   transition: 0.2s;
-
-  margin-top: 8px;
 }
 
 .form_button:hover {
@@ -127,6 +126,7 @@
 @media (min-width: 700px) {
   .form_login {
     width: 600px;
+
     padding: 5%;
   }
 }

@@ -7,7 +7,6 @@ const usersController = new UsersController();
 const sessionsController = new SessionsController();
 
 routes.post("/users", usersController.create);
-routes.get("/users", usersController.index);
 
 routes.post("/sessions", sessionsController.create);
 
