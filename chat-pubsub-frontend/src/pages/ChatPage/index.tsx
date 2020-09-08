@@ -93,7 +93,7 @@ function ChatPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="form_chat">
-        <input
+        <textarea
           placeholder="Enter your message"
           value={message}
           onChange={(event) => setMessage(event.target.value)}
