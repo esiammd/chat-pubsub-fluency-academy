@@ -2,8 +2,6 @@ import React, { useState, FormEvent, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import io from "socket.io-client";
 
-import api from "../../services/api";
-
 import "./styles.css";
 
 interface MessagesProps {
@@ -11,62 +9,47 @@ interface MessagesProps {
   message: string;
 }
 
-const socket = io("http://localhost:3333");
-
 function ChatPage() {
   const history = useHistory();
 
   const username = localStorage.getItem("username") || "username";
-  const [userLevel, setUserLevel] = useState("");
+
+  const [socket, setSocket] = useState<SocketIOClient.Socket>();
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<MessagesProps[]>([]);
 
   useEffect(() => {
-    async function conection() {
-      const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-      try {
-        const response = await api.get("chats", {
-          headers: {
-            Authorization: token,
-          },
-        });
-
-        return response.data;
-      } catch (error) {
-        history.push("/");
-      }
+    if (!token) {
+      history.push("/");
     }
 
-    conection().then((response) => {
-      setUserLevel(response.userLevel);
+    const socket = io.connect("http://localhost:3333", {
+      query: { token },
     });
+
+    setSocket(socket);
   }, [history]);
 
   useEffect(() => {
     function handleNewMessage(newMessage: MessagesProps) {
-      // messages.push(newMessage);
-      // setMessages([...messages]);
-      setMessages([...messages, newMessage]);
+      messages.push(newMessage);
+      setMessages([...messages]);
     }
 
-    // socket.on("previousMessages", (previousMessages: MessagesProps[]) => {
-    //   console.log(previousMessages);
-    //   previousMessages.map((item) => handleNewMessage(item));
-    // });
+    if (socket) {
+      // listen to previous messages
+      socket.on("previousMessages", (previousMessages: MessagesProps[]) => {
+        previousMessages.map((item) => handleNewMessage(item));
+      });
 
-    // socket.on("sendMessage", (newMessage: MessagesProps) => {
-    //   handleNewMessage(newMessage);
-    // }); //se inscreve no canal sendMessage
-
-    // return () => {
-    //   //se desinscreve do canal sendMessage
-    //   socket.off("sendMessage", (newMessage: MessagesProps) => {
-    //     handleNewMessage(newMessage);
-    //   });
-    // };
-  }, [messages]);
+      socket.on("receivedMessage", (newMessage: MessagesProps) => {
+        handleNewMessage(newMessage);
+      }); //se inscreve no canal sendMessage
+    }
+  }, [socket, messages]);
 
   function handleLogout() {
     localStorage.removeItem("username");
@@ -79,8 +62,9 @@ function ChatPage() {
     event.preventDefault();
 
     if (message !== "") {
-      console.log(userLevel, message);
-      socket.emit("sendMessage", { username, message });
+      if (socket) {
+        socket.emit("sendMessage", { username, message });
+      }
       setMessage("");
     }
   }

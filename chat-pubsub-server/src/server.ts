@@ -1,10 +1,10 @@
 import express from "express";
 import cors from "cors";
 import routes from "./routes";
+import verifyToken from "../src/utils/verifyToken";
 
 import { createServer } from "http";
 import socketIo from "socket.io";
-import authMiddleware from "./middlewares/auth";
 
 const app = express();
 
@@ -15,33 +15,33 @@ app.use(cors());
 app.use(express.json());
 app.use(routes);
 
-////////////////////////////////////////////////////
-app.get("/chats", authMiddleware, (req, res) => {
-  interface MessagesProps {
-    username: string;
-    message: string;
-  }
+// socket.io
+interface MessagesProps {
+  username: string;
+  message: string;
+}
 
-  let messages: MessagesProps[] = []; // sem armazenamento na base de dados no momento
-  io.on("connection", (socket) => {
-    console.log(`Socket conectado: ${socket.id}`);
+let messages: MessagesProps[] = []; // sem armazenamento na base de dados no momento
 
-    // socket.emit("previousMessages", messages);
+io.use((socket, next) => {
+  const token = socket.handshake.query.token;
+  verifyToken(token, socket, next);
+}).on("connection", (socket: any) => {
+  console.log(`Socket conectado: ${socket.id}`);
 
-    //escuta o canal sendMessage e emite para todos pelo io.on
-    socket.on("sendMessage", (data) => {
-      console.log(data);
-      messages.push(data);
-      io.emit("sendMessage", data);
-    });
+  // sends previous messages
+  socket.emit("previousMessages", messages);
 
-    socket.on("disconnect", () => {
-      console.log(`Socket disconnect: ${socket.id}`);
-    });
+  // escuta o canal sendMessage e emite para todos pelo io.on
+  socket.on("sendMessage", (data: any) => {
+    console.log("nivel: ", socket.decoded);
+    messages.push(data);
+    io.emit("receivedMessage", data);
   });
 
-  return res.json({ userLevel: req.userLevel });
+  socket.on("disconnect", () => {
+    console.log(`Socket disconnect: ${socket.id}`);
+  });
 });
-///////////////////////////////////////////////////
 
 server.listen(3333);
