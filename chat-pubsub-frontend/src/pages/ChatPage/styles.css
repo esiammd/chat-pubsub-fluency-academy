@@ -77,15 +77,15 @@
   align-self: flex-end;
   text-align: right;
 
-  width: min-content;
-  padding: 4px;
+  width: max-content;
+  padding: 4px 8px;
 
   background-color: rgb(252, 139, 119);
 }
 
 .message_other {
-  width: min-content;
-  padding: 4px;
+  width: max-content;
+  padding: 4px 8px;
 
   background-color: rgb(224, 220, 226);
 }

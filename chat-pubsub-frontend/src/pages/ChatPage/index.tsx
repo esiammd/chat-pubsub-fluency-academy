@@ -36,18 +36,19 @@ function ChatPage() {
 
   useEffect(() => {
     function handleNewMessage(newMessage: MessagesProps) {
-      // messages.push(newMessage);
-      // setMessages([...messages]);
-      setMessages([...messages, newMessage]);
+      messages.push(newMessage);
+      setMessages([...messages]);
     }
 
-    // listen to previous messages
-    // socket?.on("previousMessages", (previousMessages: MessagesProps[]) => {
-    //   previousMessages.map((item) => handleNewMessage(item));
-    // });
-
     // listen to the channel you belong to
-    socket?.on("channel", (channel: string) => setChannel(channel));
+    socket?.on("channel", (channel: string) => {
+      setChannel(channel);
+    });
+
+    // listen to previous messages
+    socket?.on("previousMessages", (previousMessages: MessagesProps[]) => {
+      previousMessages.map((item) => handleNewMessage(item));
+    });
 
     // subscribe to the channel you belong to
     socket?.on(channel, (newMessage: MessagesProps) => {

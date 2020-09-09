@@ -1,10 +1,12 @@
-import express from "express";
+import express, { response } from "express";
 import cors from "cors";
 import routes from "./routes";
-import verifyToken from "../src/utils/verifyToken";
 
 import { createServer } from "http";
 import socketIo from "socket.io";
+
+import verifyToken from "../src/utils/verifyToken";
+import db from "./database/connection";
 
 const app = express();
 
@@ -17,11 +19,21 @@ app.use(routes);
 
 // socket.io
 interface MessagesProps {
+  level: string;
   username: string;
   message: string;
 }
 
-let messages: MessagesProps[] = []; // sem armazenamento na base de dados no momento
+async function saveMessage(message: MessagesProps) {
+  await db("messages").insert(message);
+}
+
+async function retrieveMessages(level: string) {
+  const response = await db("messages")
+    .where("level", level)
+    .select("username", "message");
+  return response;
+}
 
 io.use((socket, next) => {
   const token = socket.handshake.query.token;
@@ -29,20 +41,21 @@ io.use((socket, next) => {
 }).on("connection", (socket: any) => {
   console.log(`Socket conectado: ${socket.id}`);
 
+  // passes on to the customer the channel he should listen to
+  socket.emit("channel", socket.decoded);
+
   // sends previous messages
-  // socket.emit("previousMessages", messages);
+  retrieveMessages(socket.decoded).then((response) => {
+    socket.emit("previousMessages", response);
+  });
 
   /**
    * listen to the sendMessage channel,
    * checks the customer’s authorization level,
-   * passes on to the customer the channel he should listen to and
    * forwards the received message to the corresponding levels
    * */
   socket.on("sendMessage", (data: any) => {
-    console.log("nivel: ", socket.decoded);
-    messages.push(data);
-
-    socket.emit("channel", socket.decoded);
+    saveMessage({ level: socket.decoded, ...data });
 
     switch (socket.decoded) {
       case "D":
