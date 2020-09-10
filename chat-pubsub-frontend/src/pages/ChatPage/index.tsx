@@ -115,54 +115,56 @@ function ChatPage() {
         </button>
       </header>
 
-      <h1>Chat Fluency Academy</h1>
+      <div className="chat">
+        <h1>Chat Fluency Academy</h1>
 
-      <div className="channels">
-        {channels.map((item, index) => {
-          return (
-            <button
-              key={index}
-              type="button"
-              onClick={() => handleChangeChannel(item.channel)}
-              disabled={!userChannels.includes(item.channel)}
-              className={`channel_${
-                item.channel === selectedChannel ? "selected" : ""
-              }`}
-            >
-              Chat {item.channel}
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="messages">
-        <ul>
-          {messages.map((item, index) => {
+        <div className="channels">
+          {channels.map((item, index) => {
             return (
-              <li
+              <button
                 key={index}
-                className={`message_${
-                  item.username === username ? "mine" : "other"
+                type="button"
+                onClick={() => handleChangeChannel(item.channel)}
+                disabled={!userChannels.includes(item.channel)}
+                className={`channel_${
+                  item.channel === selectedChannel ? "selected" : ""
                 }`}
               >
-                <span>{item.username}</span>
-                <p>{item.message}</p>
-              </li>
+                Chat {item.channel}
+              </button>
             );
           })}
-        </ul>
-      </div>
+        </div>
 
-      <form onSubmit={handleSubmit} className="form_chat">
-        <textarea
-          placeholder="Enter your message"
-          value={message}
-          onChange={(event) => setMessage(event.target.value)}
-        />
-        <button type="submit" className="form_button">
-          Submit
-        </button>
-      </form>
+        <div className="messages">
+          <ul>
+            {messages.map((item, index) => {
+              return (
+                <li
+                  key={index}
+                  className={`message_${
+                    item.username === username ? "mine" : "other"
+                  }`}
+                >
+                  <span>{item.username}</span>
+                  <p>{item.message}</p>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        <form onSubmit={handleSubmit} className="form_chat">
+          <textarea
+            placeholder="Enter your message"
+            value={message}
+            onChange={(event) => setMessage(event.target.value)}
+          />
+          <button type="submit" className="form_button">
+            Submit
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
