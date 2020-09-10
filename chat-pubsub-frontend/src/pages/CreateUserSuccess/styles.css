@@ -28,27 +28,22 @@
 
 .page_create_user_success p {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 
   color: var(--text-color);
 }
 
 .page_create_user_success a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
   text-decoration: none;
 
-  color: #fff;
-  font-weight: bold;
+  color: var(--primary-color);
   font-size: 16px;
+  font-weight: bold;
 
+  border: 2px solid var(--primary-color);
   border-radius: 5px;
-  background-color: var(--button-color);
 
-  height: 50px;
-  width: 120px;
+  padding: 16px 40px;
 
   transition: 0.2s;
 }
