@@ -14,6 +14,7 @@ function CreateUser() {
   const [channel, setChannel] = useState("");
 
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const [messageError, setMessageError] = useState("");
 
   function showPassword() {
     const element = document.getElementById("password");
@@ -31,14 +32,13 @@ function CreateUser() {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (!username || !password || !channel) {
-      alert("Fill in all the fields on the form.");
+      setMessageError("Fill in all the fields on the form.");
     }
     try {
       await api.post("/users", { username, password, channel });
-      alert("User created successfully.");
-      history.push("/");
-    } catch (erro) {
-      alert("Sorry, there was a registration failure. Please try again.");
+      history.push("/create/user/success");
+    } catch (error) {
+      setMessageError(error.response.data.error);
     }
   }
 
@@ -50,6 +50,14 @@ function CreateUser() {
 
       <form onSubmit={handleSubmit} className="form_create_user">
         <h1>Create User</h1>
+
+        {messageError && (
+          <div className="error">
+            <span>
+              <strong>Sorry:</strong> {messageError}
+            </span>
+          </div>
+        )}
 
         <div className="form_field">
           <label htmlFor="username">Username:</label>

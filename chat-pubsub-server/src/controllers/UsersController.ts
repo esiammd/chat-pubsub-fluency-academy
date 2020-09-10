@@ -20,7 +20,7 @@ export default class UsersController {
       });
     } else {
       return res.status(409).json({
-        error: "User already exists",
+        error: "User already exists. Please try a new username.",
       });
     }
 

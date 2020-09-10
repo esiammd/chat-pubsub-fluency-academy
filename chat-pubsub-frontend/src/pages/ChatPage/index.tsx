@@ -48,7 +48,7 @@ function ChatPage() {
       try {
         const channels = await api.get("/channels");
         setChannels(channels.data);
-      } catch (erro) {
+      } catch (error) {
         alert("Request failed");
       }
     }

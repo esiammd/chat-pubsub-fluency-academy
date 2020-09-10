@@ -7,12 +7,13 @@ import api from "../../services/api";
 import "./styles.css";
 
 function Login() {
+  const history = useHistory();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const [isShowPassword, setIsShowPassword] = useState(false);
-
-  const history = useHistory();
+  const [messageError, setMessageError] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -47,8 +48,8 @@ function Login() {
       localStorage.setItem("username", username);
 
       history.push("/chat");
-    } catch (erro) {
-      alert("Username and/or password are invalid");
+    } catch (error) {
+      setMessageError(error.response.data.error);
     }
   }
 
@@ -56,6 +57,14 @@ function Login() {
     <div className="page_login">
       <form onSubmit={handleSubmit} className="form_login">
         <h1>Login</h1>
+
+        {messageError && (
+          <div className="error">
+            <span>
+              <strong>Sorry:</strong> {messageError}
+            </span>
+          </div>
+        )}
 
         <div className="form_field">
           <label htmlFor="username">Username:</label>

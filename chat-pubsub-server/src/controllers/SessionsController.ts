@@ -15,7 +15,7 @@ export default class SessionsController {
       .first();
 
     if (!user || !(await verifyPassword(user.password, password))) {
-      return res.status(401).json({ error: "Incorrect username or password" });
+      return res.status(401).json({ error: "Incorrect username or password." });
     }
 
     const { channel } = await db("channels")
