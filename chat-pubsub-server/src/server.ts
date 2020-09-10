@@ -1,4 +1,4 @@
-import express, { response } from "express";
+import express from "express";
 import cors from "cors";
 import routes from "./routes";
 
@@ -10,16 +10,13 @@ import db from "./database/connection";
 
 const app = express();
 
-const server = createServer(app);
-const io = socketIo(server);
-
 app.use(cors());
 app.use(express.json());
 app.use(routes);
 
 // socket.io
 interface MessagesProps {
-  level: string;
+  channel: string;
   username: string;
   message: string;
 }
@@ -28,53 +25,75 @@ async function saveMessage(message: MessagesProps) {
   await db("messages").insert(message);
 }
 
-async function retrieveMessages(level: string) {
+async function retrieveMessages(channel: string) {
   const response = await db("messages")
-    .where("level", level)
+    .where("channel", channel)
     .select("username", "message");
   return response;
 }
 
+const server = createServer(app);
+const io = socketIo(server);
+
 io.use((socket, next) => {
   const token = socket.handshake.query.token;
+
   verifyToken(token, socket, next);
 }).on("connection", (socket: any) => {
-  console.log(`Socket conectado: ${socket.id}`);
+  // passes the channels to the customer that he has access to
+  if (socket.decoded === "D") {
+    socket.emit("userChannels", ["D"]);
+  }
+  if (socket.decoded === "C") {
+    socket.emit("userChannels", ["C", "D"]);
+  }
+  if (socket.decoded === "B") {
+    socket.emit("userChannels", ["B", "C", "D"]);
+  }
+  if (socket.decoded === "A") {
+    socket.emit("userChannels", ["A", "B", "C", "D"]);
+  }
 
-  // passes on to the customer the channel he should listen to
-  socket.emit("channel", socket.decoded);
+  /**
+   * subscribe to channel 'D' (channel selected by default)
+   * and send previous messages from channel 'D'
+   */
+  let selectedChannel = "D";
+  socket.join(selectedChannel);
+  retrieveMessages(selectedChannel).then((response) => {
+    socket.emit("previousMessage", response);
+  });
 
-  // sends previous messages
-  retrieveMessages(socket.decoded).then((response) => {
-    socket.emit("previousMessages", response);
+  /**
+   * listens to the channel selection change, subscribe
+   * to new channel and sends the corresponding previous
+   * messages of new channel
+   */
+  socket.on("changeChannel", (channel: string) => {
+    retrieveMessages(channel).then((response) => {
+      socket.emit("previousMessage", response);
+    });
+
+    if (channel !== selectedChannel) {
+      socket.leave(selectedChannel);
+      socket.join(channel);
+      selectedChannel = channel;
+    }
   });
 
   /**
    * listen to the sendMessage channel,
-   * checks the customer’s authorization level,
-   * forwards the received message to the corresponding levels
-   * */
-  socket.on("sendMessage", (data: any) => {
-    saveMessage({ level: socket.decoded, ...data });
+   * forwards the received message to the corresponding channel and
+   * stores the message in the database
+   */
+  socket.on("sendMessage", (data: MessagesProps) => {
+    const { channel, ...newMessage } = data;
 
-    switch (socket.decoded) {
-      case "D":
-        io.emit("D", data);
-
-      case "C":
-        io.emit("C", data);
-
-      case "B":
-        io.emit("B", data);
-
-      default:
-        io.emit("A", data);
-    }
+    io.sockets.in(channel).emit("receivedMessage", newMessage);
+    saveMessage({ channel, ...newMessage });
   });
 
-  socket.on("disconnect", () => {
-    console.log(`Socket disconnect: ${socket.id}`);
-  });
+  socket.on("disconnect", () => {});
 });
 
 server.listen(3333);

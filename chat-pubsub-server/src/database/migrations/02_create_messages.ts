@@ -3,7 +3,7 @@ import Knex from "knex";
 export async function up(knex: Knex) {
   return knex.schema.createTable("messages", (table) => {
     table.increments("id").primary();
-    table.string("level").notNullable();
+    table.string("channel").notNullable();
     table.string("username").notNullable();
     table.string("message").notNullable();
 

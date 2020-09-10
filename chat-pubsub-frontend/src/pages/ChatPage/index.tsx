@@ -2,6 +2,8 @@ import React, { useState, FormEvent, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import io from "socket.io-client";
 
+import api from "../../services/api";
+
 import "./styles.css";
 
 interface MessagesProps {
@@ -9,17 +11,24 @@ interface MessagesProps {
   message: string;
 }
 
+interface ChannelsProps {
+  channel: string;
+}
+
 function ChatPage() {
   const history = useHistory();
+  const [socket, setSocket] = useState<SocketIOClient.Socket>();
 
   const username = localStorage.getItem("username") || "username";
+  const [userChannels, setUserChannels] = useState<string[]>([]);
 
-  const [socket, setSocket] = useState<SocketIOClient.Socket>();
-  const [channel, setChannel] = useState("");
+  const [channels, setChannels] = useState<ChannelsProps[]>([]);
+  const [selectedChannel, setSelectedChannel] = useState("D");
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<MessagesProps[]>([]);
 
+  // connection socket
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -30,31 +39,43 @@ function ChatPage() {
     const socket = io.connect("http://localhost:3333", {
       query: { token },
     });
-
     setSocket(socket);
   }, [history]);
 
+  // setChannels
   useEffect(() => {
-    function handleNewMessage(newMessage: MessagesProps) {
-      messages.push(newMessage);
-      setMessages([...messages]);
+    async function handleChannels() {
+      try {
+        const channels = await api.get("/channels");
+        setChannels(channels.data);
+      } catch (erro) {
+        alert("Request failed");
+      }
     }
+    handleChannels();
+  }, []);
 
-    // listen to the channel you belong to
-    socket?.on("channel", (channel: string) => {
-      setChannel(channel);
+  // setUserChannels
+  useEffect(() => {
+    // listens to user access channels
+    socket?.on("userChannels", (userChannels: string[]) => {
+      setUserChannels(userChannels);
     });
+  }, [socket, userChannels]);
 
-    // listen to previous messages
-    socket?.on("previousMessages", (previousMessages: MessagesProps[]) => {
-      previousMessages.map((item) => handleNewMessage(item));
+  // listen to previous messages from channel selected
+  useEffect(() => {
+    socket?.on("previousMessage", (newMessages: MessagesProps[]) => {
+      setMessages([...messages, ...newMessages]);
     });
+  }, [socket, messages]);
 
-    // subscribe to the channel you belong to
-    socket?.on(channel, (newMessage: MessagesProps) => {
-      handleNewMessage(newMessage);
+  // listen to received messages from channel selected
+  useEffect(() => {
+    socket?.on("receivedMessage", (newMessage: MessagesProps) => {
+      setMessages([...messages, newMessage]);
     });
-  }, [socket, channel, messages]);
+  }, [socket, messages]);
 
   function handleLogout() {
     localStorage.removeItem("username");
@@ -66,12 +87,22 @@ function ChatPage() {
     history.push("/");
   }
 
+  function handleChangeChannel(channel: string) {
+    socket?.emit("changeChannel", channel);
+    setSelectedChannel(channel);
+    setMessages([]);
+  }
+
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
     if (message !== "") {
       // send the message to the sendMessage channel
-      socket?.emit("sendMessage", { username, message });
+      socket?.emit("sendMessage", {
+        channel: selectedChannel,
+        username,
+        message,
+      });
       setMessage("");
     }
   }
@@ -86,6 +117,24 @@ function ChatPage() {
 
       <h1>Chat Fluency Academy</h1>
 
+      <div className="channels">
+        {channels.map((item, index) => {
+          return (
+            <button
+              key={index}
+              type="button"
+              onClick={() => handleChangeChannel(item.channel)}
+              disabled={!userChannels.includes(item.channel)}
+              className={`channel_${
+                item.channel === selectedChannel ? "selected" : ""
+              }`}
+            >
+              Chat {item.channel}
+            </button>
+          );
+        })}
+      </div>
+
       <div className="messages">
         <ul>
           {messages.map((item, index) => {
@@ -97,7 +146,7 @@ function ChatPage() {
                 }`}
               >
                 <span>{item.username}</span>
-                <p style={{ whiteSpace: "pre-wrap" }}>{item.message}</p>
+                <p>{item.message}</p>
               </li>
             );
           })}

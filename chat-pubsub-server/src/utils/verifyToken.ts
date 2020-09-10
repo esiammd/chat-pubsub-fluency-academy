@@ -13,7 +13,7 @@ function verifyToken(token: string, socket: any, next: NextFunction) {
     if (error) {
       return next(new Error("Token invalid"));
     }
-    socket.decoded = decoded.level;
+    socket.decoded = decoded.channel;
     next();
   });
 }

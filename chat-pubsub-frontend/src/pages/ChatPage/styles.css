@@ -35,6 +35,36 @@
   margin-bottom: 32px;
 }
 
+.channels button {
+  color: var(--primary-color);
+  font-weight: bold;
+  font-size: 14px;
+
+  border: 0px;
+  border-bottom: 0px;
+  border-radius: 5px 5px 0px 0px;
+
+  padding: 8px;
+
+  transition: 0.2s;
+}
+
+.channels button:hover {
+  background-color: #c7c7c7;
+}
+
+.channels button:disabled {
+  opacity: 0.3;
+}
+
+.channels button + button {
+  margin-left: 6px;
+}
+
+.channel_selected {
+  background-color: #fff;
+}
+
 .messages {
   display: flex;
   flex-direction: column-reverse;
@@ -42,7 +72,6 @@
   height: 45%;
 
   padding: 8px 16px;
-  margin-bottom: 12px;
 
   background-color: #fff;
   border-radius: 5px;
@@ -71,6 +100,7 @@
 
 .messages li p {
   color: var(--title-color);
+  white-space: pre-wrap;
 }
 
 .message_mine {
@@ -88,6 +118,10 @@
   padding: 4px 8px;
 
   background-color: rgb(224, 220, 226);
+}
+
+.form_chat {
+  margin-top: 12px;
 }
 
 .form_chat textarea {

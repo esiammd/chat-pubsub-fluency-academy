@@ -2,9 +2,9 @@ import Knex from "knex";
 
 export async function seed(knex: Knex) {
   await knex("channels").insert([
-    { level: "A" },
-    { level: "B" },
-    { level: "C" },
-    { level: "D" },
+    { channel: "A" },
+    { channel: "B" },
+    { channel: "C" },
+    { channel: "D" },
   ]);
 }
