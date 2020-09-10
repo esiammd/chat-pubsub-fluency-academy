@@ -19,7 +19,16 @@
 .form_login h1 {
   text-align: center;
 
-  margin-bottom: 32px;
+  margin-bottom: 8px;
+}
+
+.form_login p {
+  text-align: center;
+
+  margin-bottom: 24px;
+
+  color: var(--primary-color);
+  opacity: 0.8;
 }
 
 .error {

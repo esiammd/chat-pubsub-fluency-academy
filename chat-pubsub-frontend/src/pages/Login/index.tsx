@@ -57,6 +57,7 @@ function Login() {
     <div className="page_login">
       <form onSubmit={handleSubmit} className="form_login">
         <h1>Login</h1>
+        <p>Chat Fluency Academy</p>
 
         {messageError && (
           <div className="error">
