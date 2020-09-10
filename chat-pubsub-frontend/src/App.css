@@ -19,6 +19,7 @@ body {
 
 body,
 input,
+textarea,
 button {
   font-family: Roboto, Arial, Helvetica, sans-serif;
 }

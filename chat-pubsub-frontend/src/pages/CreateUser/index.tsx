@@ -1,5 +1,5 @@
 import React, { FormEvent, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
 import api from "../../services/api";
@@ -7,13 +7,14 @@ import api from "../../services/api";
 import "./styles.css";
 
 function CreateUser() {
+  const history = useHistory();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [level, setLevel] = useState("");
+  const [channel, setChannel] = useState("");
 
   const [isShowPassword, setIsShowPassword] = useState(false);
-
-  const history = useHistory();
+  const [messageError, setMessageError] = useState("");
 
   function showPassword() {
     const element = document.getElementById("password");
@@ -30,14 +31,14 @@ function CreateUser() {
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    if (!username || !password || !level) {
-      alert("Fill in all the fields on the form.");
+    if (!username || !password || !channel) {
+      setMessageError("Fill in all the fields on the form.");
     }
     try {
-      await api.post("/users", { username, password, level });
-      history.push("/");
-    } catch (erro) {
-      alert("Sorry, there was a registration failure. Please try again.");
+      await api.post("/users", { username, password, channel });
+      history.push("/create/user/success");
+    } catch (error) {
+      setMessageError(error.response.data.error);
     }
   }
 
@@ -49,6 +50,14 @@ function CreateUser() {
 
       <form onSubmit={handleSubmit} className="form_create_user">
         <h1>Create User</h1>
+
+        {messageError && (
+          <div className="error">
+            <span>
+              <strong>Sorry:</strong> {messageError}
+            </span>
+          </div>
+        )}
 
         <div className="form_field">
           <label htmlFor="username">Username:</label>
@@ -76,14 +85,14 @@ function CreateUser() {
         </div>
 
         <div className="form_field">
-          <label htmlFor="level">Level:</label>
+          <label htmlFor="channel">Channel:</label>
           <select
-            id="level"
-            value={level}
-            onChange={(event) => setLevel(event.target.value)}
+            id="channel"
+            value={channel}
+            onChange={(event) => setChannel(event.target.value)}
           >
             <option value="" hidden>
-              Select a level
+              Select a channel
             </option>
             <option value="A">A</option>
             <option value="B">B</option>
@@ -93,7 +102,7 @@ function CreateUser() {
         </div>
 
         <button type="submit" className="form_button">
-          Entrar
+          Register
         </button>
       </form>
     </div>

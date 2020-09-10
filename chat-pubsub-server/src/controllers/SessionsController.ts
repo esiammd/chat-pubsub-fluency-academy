@@ -11,15 +11,20 @@ export default class SessionsController {
 
     const user = await db("users")
       .where("username", username)
-      .select("id", "password", "level")
+      .select("id", "password", "channel_id")
       .first();
 
     if (!user || !(await verifyPassword(user.password, password))) {
-      return res.status(401).json({ error: "Incorrect username or password" });
+      return res.status(401).json({ error: "Incorrect username or password." });
     }
 
-    return res
-      .status(201)
-      .json({ token: generateToken({ id: user.id }), level: user.level });
+    const { channel } = await db("channels")
+      .where("id", user.channel_id)
+      .select("channel")
+      .first();
+
+    return res.status(201).json({
+      token: generateToken({ id: user.id, channel }),
+    });
   }
 }

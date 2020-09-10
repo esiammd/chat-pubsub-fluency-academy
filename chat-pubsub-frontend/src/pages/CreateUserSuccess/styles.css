@@ -1,16 +1,24 @@
-.page_page404 {
+.page_create_user_success {
   height: 100vh;
+
+  padding: 0 5%;
 
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
-.error_404 {
+.page_create_user_success .icon {
+  font-size: 40px;
+  color: var(--button-color);
+  margin-bottom: 12px;
+}
+
+.page_create_user_success span {
   text-align: center;
 
-  font-size: 40px;
+  font-size: 20px;
   font-weight: bold;
 
   margin-bottom: 12px;
@@ -18,12 +26,14 @@
   color: var(--primary-color);
 }
 
-.text_404 {
+.page_create_user_success p {
   text-align: center;
   margin-bottom: 32px;
+
+  color: var(--text-color);
 }
 
-.page_page404 a {
+.page_create_user_success a {
   text-decoration: none;
 
   color: var(--primary-color);
@@ -38,12 +48,16 @@
   transition: 0.2s;
 }
 
-.page_page404 a:hover {
+.page_create_user_success a:hover {
   opacity: 0.8;
 }
 
 @media (min-width: 700px) {
-  .error_404 {
-    font-size: 80px;
+  .page_create_user_success span {
+    font-size: 24px;
+  }
+
+  .page_create_user_success p {
+    width: 350px;
   }
 }
