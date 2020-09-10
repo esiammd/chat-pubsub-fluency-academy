@@ -1,1 +1,5 @@
+# ignore node module dependencies
 node_modules
+
+# ignore file database.sqlite
+src/database/database.sqlite
