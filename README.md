@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="Chat Pubsub" title="#chat-pubsub" src=".github/chat-pubsub.jpg" width="50%" />
+    <img alt="Chat Pubsub" title="#chat-pubsub" src=".github/chat-pubsub.jpg" width="65%" />
 </p>
 
 <h4 align="center">
