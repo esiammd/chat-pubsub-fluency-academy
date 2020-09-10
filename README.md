@@ -1,15 +1,15 @@
-<h1 align="center">
-    <img alt="Chat Pubsub" title="#chat-pubsub" src=".github/chat-pubsub.jpg" width="75%" />
-</h1>
-
 <h4 align="center">
   Project Developed as part of the Fluency Academy Full Stack Technical Challenge
 </h4>
 
 <p align="center">
-  <a href="#-tecnologias">Technology</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-projeto">Project</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-como-contribuir">How to use</a>
+  <a href="#-technology">Technology</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-project">Project</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-how-to-use">How to use</a>
+</p>
+
+<p align="center">
+    <img alt="Chat Pubsub" title="#chat-pubsub" src=".github/chat-pubsub.jpg" width="75%" />
 </p>
 
 ### 🚀 Technology
