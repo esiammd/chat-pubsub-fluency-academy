@@ -61,6 +61,10 @@
   opacity: 0.3;
 }
 
+.channels button:focus {
+  background-color: #fff;
+}
+
 .channels button + button {
   margin-left: 6px;
 }
@@ -111,14 +115,14 @@
   align-self: flex-end;
   text-align: right;
 
-  width: max-content;
+  width: fit-content;
   padding: 4px 8px;
 
   background-color: rgb(252, 139, 119);
 }
 
 .message_other {
-  width: max-content;
+  width: fit-content;
   padding: 4px 8px;
 
   background-color: rgb(224, 220, 226);

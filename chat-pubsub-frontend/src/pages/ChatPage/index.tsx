@@ -127,7 +127,7 @@ function ChatPage() {
                 onClick={() => handleChangeChannel(item.channel)}
                 disabled={!userChannels.includes(item.channel)}
                 className={`channel_${
-                  item.channel === selectedChannel ? "selected" : ""
+                  item.channel === selectedChannel ? "selected" : "unselected"
                 }`}
               >
                 Chat {item.channel}
