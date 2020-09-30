@@ -24,8 +24,6 @@ This project was developed with the following technologies:
 
 Chat Pubsub Fluency Academy is a multi-user system with authorization and authentication. It is a multi-user chat system using asynchronous [pub/sub](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) pattern.
 
-The full description of the project is available at: [Full Stack Technical Challenge](https://www.notion.so/Full-Stack-Backend-Frontend-5477ce83b51b4a44bd9528c50b48ed49)
-
 ### 🤔 How to use
 
 - Download the repository on your machine;
